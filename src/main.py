@@ -1,85 +1,60 @@
-import json
-from pydantic import BaseModel, Field
-from typing import List, Optional
+# File location: src/main.py
+import os
+import sys
 
-# --- SCHEMA CONTRACTS FOR MULTI-STEP REASONING ---
-class ComplianceEscalationPackage(BaseModel):
-    transaction_id: str
-    vendor: str
-    delay_days: int
-    calculated_penalty: float
-    assigned_manager_email: str
-    escalation_payload: str
+# --- PATH RESOLUTION ALIGNMENT FOR PYLANCE ---
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
-# --- MOCK AGENT IMPLEMENTATIONS ---
-class FabricIQAgent:
-    """Scans structured OneLake transaction data for high-risk anomalies."""
-    def analyze_telemetry(self) -> Optional[dict]:
-        print("[Fabric IQ Agent] Scanning OneLake data assets...")
-        with open("mock_data/one_lake_inventory.json", "r") as f:
-            data = json.load(f)
-        # Triage condition: flag delays > 7 days
-        anomalies = [t for t in data if t["days_delayed"] > 7]
-        return anomalies[0] if anomalies else None
+from src.agents.fabric_agent import FabricIQAgent
+from src.agents.foundry_agent import FoundryIQAgent
+from src.agents.work_agent import WorkIQAgent
 
-class FoundryIQAgent:
-    """Executes RAG reasoning over unstructured SLA rules to ground legal penalty calculations."""
-    def audit_contract(self, anomaly: dict) -> float:
-        print(f"[Foundry IQ Agent] Running RAG Audit on contract for: {anomaly['vendor_name']}...")
-        with open("mock_data/vendor_sla_rules.md", "r") as f:
-            contract_text = f.read()
-        
-        # Simple programmatic extraction representing model parsing logic
-        if "ApexLogistics" in anomaly["vendor_name"] and "hardware components" in contract_text:
-            excess_days = anomaly["days_delayed"] - 7
-            penalty = excess_days * 15000 # $15k per day rule
-            return penalty
-        return 0.0
-
-class WorkIQAgent:
-    """Queries corporate directory/Graph schemas to route notifications to the correct human owner."""
-    def resolve_hierarchy(self, vendor_name: str) -> str:
-        print(f"[Work IQ Agent] Interrogating Microsoft Graph schema for vendor: {vendor_name}...")
-        with open("mock_data/company_org_graph.json", "r") as f:
-            org = json.load(f)
-        
-        for manager in org["departments"]["SupplyChain"]["account_managers"]:
-            if vendor_name in manager["assigned_vendors"]:
-                return manager["teams_id"]
-        return "ops-alert@enterprise.com"
-
-# --- CORE ORCHESTRATION PIPELINE ---
-def run_orchestra_risk_pipeline():
-    print("=== Starting OrchestraRisk Autonomous Compliance Execution ===")
+def run_orchestra_risk_enterprise_pipeline():
+    print("=== 🚀 Initializing OrchestraRisk Autonomous Compliance Lifecycle ===")
     
-    fabric = FabricIQAgent()
-    foundry = FoundryIQAgent()
-    work = WorkIQAgent()
+    # Instantiate active infrastructure agent nodes
+    fabric_node = FabricIQAgent()
+    foundry_node = FoundryIQAgent()
+    work_node = WorkIQAgent()
     
-    # Step 1: Detect Anomaly (Fabric IQ)
-    anomaly = fabric.analyze_telemetry()
-    if not anomaly:
-        print("No compliance risk profiles found.")
+    # Step 1: Ingest active operational discrepancies from Fabric OneLake
+    disruptions = fabric_node.scan_active_anomalies()
+    if not disruptions:
+        print("🎉 Clean State: Zero active logistics supply chain risks detected.")
         return
         
-    # Step 2: Compute Legal/Financial Liability (Foundry IQ)
-    penalty_fee = foundry.audit_contract(anomaly)
-    
-    # Step 3: Discover Operational Owner (Work IQ)
-    target_owner = work.resolve_hierarchy(anomaly["vendor_name"])
-    
-    # Step 4: Construct the Production Escalation Package
-    final_output = ComplianceEscalationPackage(
-        transaction_id=anomaly["transaction_id"],
-        vendor=anomaly["vendor_name"],
-        delay_days=anomaly["days_delayed"],
-        calculated_penalty=penalty_fee,
-        assigned_manager_email=target_owner,
-        escalation_payload=f"ALERT: {anomaly['vendor_name']} is in breach of contract contract timelines by {anomaly['days_delayed']} days. Total estimated financial penalty: ${penalty_fee:,} USD. Action required."
-    )
-    
-    print("\n=== SYSTEM EXECUTION VERIFICATION SUCCESSFUL ===")
-    print(final_output.model_dump_json(indent=2))
+    # Step 2: Load the master unstructured compliance knowledge text asset
+    with open("mock_data/vendor_sla_rules.md", "r") as f:
+        master_contract_registry = f.read()
+        
+    # Step 3: Stream anomalies through the automated reasoning and escalation loop
+    for idx, incident in enumerate(disruptions, start=1):
+        print(f"\n--- Processing Incident Asset Context [{idx}/{len(disruptions)}] ---")
+        print(f"🔹 Transaction: {incident['transaction_id']} | Vendor: {incident['vendor_name']} | Delay: {incident['days_delayed']} Days")
+        
+        try:
+            # Execute Foundry IQ LLM Legal Audit over the contract document
+            verdict = foundry_node.audit_contract_with_llm(incident, master_contract_registry)
+            
+            # Execute Work IQ directory mapping to resolve accountability
+            target_human_owner = work_node.resolve_incident_owner(incident["vendor_name"])
+            
+            # Render final systemic telemetry output trace block
+            print(f"\n🏆 [Verification Success] Incident ID: {incident['transaction_id']}")
+            print(f"   ↳ Breach State Confirmed? : {verdict.is_breach_detected}")
+            print(f"   ↳ Contract Section Cited  : {verdict.applicable_clause_reference}")
+            print(f"   ↳ Financial Penalty Fee   : ${verdict.total_penalty_usd:,.2f} USD")
+            print(f"   ↳ Risk Severity Vector    : {verdict.risk_severity}")
+            print(f"   ↳ Dispatch Communication  : {target_human_owner}")
+            print(f"   ↳ Rationale Summary       : {verdict.reasoning_summary}")
+            
+        except Exception as pipeline_error:
+            print(f"❌ [Pipeline Node Error Handler Triggered] Incident {incident['transaction_id']} skipped: {str(pipeline_error)}")
+
+    print("\n=== All Active Supply Chain Anomalies Successfully Evaluated ===")
 
 if __name__ == "__main__":
-    run_orchestra_risk_pipeline()
+    run_orchestra_risk_enterprise_pipeline()

@@ -1,10 +1,26 @@
 [
   {
+    "transaction_id": "TXN-10041",
+    "vendor_name": "GlobalTech Partners",
+    "item_category": "Power Cables",
+    "days_delayed": 2,
+    "financial_impact_usd": 8000,
+    "status": "In Transit"
+  },
+  {
     "transaction_id": "TXN-90821",
     "vendor_name": "ApexLogistics Global",
     "item_category": "Semiconductor Components",
     "days_delayed": 14,
     "financial_impact_usd": 250000,
     "status": "Delayed-Stuck at Port"
+  },
+  {
+    "transaction_id": "TXN-44102",
+    "vendor_name": "Nexus Freight Systems",
+    "item_category": "Aluminium Chassis",
+    "days_delayed": 9,
+    "financial_impact_usd": 45000,
+    "status": "Delayed at Customs"
   }
 ]
