@@ -11,12 +11,11 @@ Rather than relying on basic prompt wrappers, OrchestraRisk implements a strict 
 
 OrchestraRisk is architected around the cooperative intersection of the three **Microsoft IQ Layer** dimensions:
 
-[Fabric IQ Telemetry Monitor] ──(Flag Incident)──> [Foundry IQ Legal Reasoning Engine]
-│
-(Compute Penalty Schema)
-│
-▼
-[Teams Notification Message] <──(Dispatch Alert)── [Work IQ Graph Hierarchy Matrix]
+graph TD
+    A[Fabric IQ Telemetry Monitor] -- "Flag Incident" --> B[Foundry IQ Legal Reasoning Engine]
+    A -- "Compute Penalty Schema" --> C[Work IQ Graph Hierarchy Matrix]
+    C -- "Dispatch Alert" --> D[Teams Notification Message]
+
 
 1. . **Fabric IQ Layer (Structured Data Monitor):** Simulates continuous data lake ingestion from Microsoft Fabric OneLake. The `FabricIQAgent` automatically queries active logistics transaction logs, filters out normal operations, and isolates high-friction anomalies (e.g., severe item delays or price variations).
 2. **Foundry IQ Layer (Unstructured Reasoning Ground):** Powered by **DeepSeek-V4-Flash** running through the Microsoft AI Foundry Model Inference Gateway. The `FoundryIQAgent` runs deep instruction-following loops over unstructured multi-vendor Master Service Agreements (SLAs) to extract penalties and cross-examine incidents against legal boundaries.
