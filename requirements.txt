@@ -1,0 +1,7 @@
+azure-ai-projects>=1.0.0b1
+azure-identity>=1.15.0
+semantic-kernel>=1.0.0
+fastapi>=0.110.0
+uvicorn>=0.28.0
+python-dotenv>=1.0.1
+pydantic>=2.6.0

@@ -1,0 +1,14 @@
+{
+  "departments": {
+    "SupplyChain": {
+      "lead": "Sarah Jenkins (VP of Operations)",
+      "account_managers": [
+        {
+          "name": "David Miller",
+          "assigned_vendors": ["ApexLogistics Global", "DHL Enterprise"],
+          "teams_id": "david.miller@enterprise.com"
+        }
+      ]
+    }
+  }
+}

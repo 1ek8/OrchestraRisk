@@ -1,0 +1,10 @@
+[
+  {
+    "transaction_id": "TXN-90821",
+    "vendor_name": "ApexLogistics Global",
+    "item_category": "Semiconductor Components",
+    "days_delayed": 14,
+    "financial_impact_usd": 250000,
+    "status": "Delayed-Stuck at Port"
+  }
+]
